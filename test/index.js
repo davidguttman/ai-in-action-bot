@@ -41,13 +41,13 @@ test('cleanup', async t => {
   }
 })
 
-function getAllTestFiles() {
+function getAllTestFiles () {
   return glob.sync('**/*.test.js', {
     cwd: __dirname,
     ignore: ['node_modules/**', 'helpers/**']
   })
 }
 
-function relativeToRequire(relativePath) {
+function relativeToRequire (relativePath) {
   return './' + relativePath.replace(/^test\//, '').replace(/\.js$/, '')
 }

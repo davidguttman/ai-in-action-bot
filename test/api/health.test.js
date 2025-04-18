@@ -9,7 +9,7 @@ test('health endpoint - successful check', async (t) => {
   const res = await supertest(server)
     .get('/health')
     .expect(200)
-  
+
   t.equal(res.body.status, 'OK')
   t.end()
 })
@@ -24,10 +24,10 @@ test('health endpoint - database error', async (t) => {
   const res = await supertest(server)
     .get('/health')
     .expect(500)
-  
+
   t.equal(res.body.error, 'Database connection failed')
-  
+
   // Restore original checkHealth
   mongoose.checkHealth = originalCheckHealth
   t.end()
-}) 
+})

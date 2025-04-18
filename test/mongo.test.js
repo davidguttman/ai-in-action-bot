@@ -11,4 +11,4 @@ test('MongoDB health check', async (t) => {
     t.error(err)
     t.end()
   }
-}) 
+})

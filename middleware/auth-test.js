@@ -1,6 +1,6 @@
 const config = require('../config')
 
-function authTestMiddleware(req, res, next) {
+function authTestMiddleware (req, res, next) {
   // In test environment, we'll use a predictable test user
   const testUser = {
     email: 'test@example.com',
@@ -24,4 +24,4 @@ function authTestMiddleware(req, res, next) {
   next()
 }
 
-module.exports = authTestMiddleware 
+module.exports = authTestMiddleware

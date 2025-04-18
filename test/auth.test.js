@@ -13,7 +13,7 @@ test('auth middleware - no token', async (t) => {
   const res = await supertest(app)
     .get('/test')
     .expect(401)
-  
+
   t.equal(res.body.error, 'No bearer token provided')
   t.end()
 })
@@ -23,7 +23,7 @@ test('auth middleware - invalid token', async (t) => {
     .get('/test')
     .set('Authorization', 'Bearer invalid-token')
     .expect(401)
-  
+
   t.equal(res.body.error, 'Invalid test token')
   t.end()
 })
@@ -33,9 +33,9 @@ test('auth middleware - valid test token', async (t) => {
     .get('/test')
     .set('Authorization', 'Bearer test-token')
     .expect(200)
-  
+
   t.equal(res.body.user.email, 'test@example.com')
   t.equal(res.body.user.id, 'test-user-id')
   t.equal(res.body.user.name, 'Test User')
   t.end()
-}) 
+})

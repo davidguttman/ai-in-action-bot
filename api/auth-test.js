@@ -7,7 +7,7 @@ const autoCatch = require('../lib/auto-catch')
 router.get('/authTest', authMiddleware, autoCatch(async (req, res) => {
   // Simulate some async operation
   await new Promise(resolve => setTimeout(resolve, 100))
-  
+
   res.json({
     message: 'Auth successful',
     user: req.user
@@ -19,4 +19,4 @@ router.get('/errorTest', authMiddleware, autoCatch(async (req, res) => {
   throw new Error('Test error')
 }))
 
-module.exports = router 
+module.exports = router

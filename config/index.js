@@ -48,4 +48,4 @@ module.exports = {
   ...config,
   logger,
   auth
-} 
+}
