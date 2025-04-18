@@ -231,40 +231,34 @@ Big D, let's add some basic error handling around the Discord interactions.
 
 ## Step 8: Testing Setup and Initial Tests
 
-**Goal:** Set up the testing framework (`ava` or `tape`) and write initial unit tests for the core scheduling logic.
+**Goal:** Ensure the testing framework (`tape`) is correctly set up and write initial unit/integration tests for the core scheduling logic.
 
 **Prompt:**
 
 ```text
-Big D, set up the testing environment using 'ava' and 'mongodb-memory-server' and write initial unit tests for the scheduling logic.
+Big D, verify the testing environment using 'tape' and write initial tests for the scheduling logic.
 
-1.  **Install dev dependencies:** `npm install --save-dev ava mongodb-memory-server`
-2.  **Configure `package.json`:** Add `"test": "ava"` to the `scripts` section.
-3.  **Create `test/schedulingLogic.test.js`:**
-    *   Require `test` from `ava`.
-    *   Require `MongoMemoryServer` from `mongodb-memory-server`.
-    *   Require `mongoose` from `../lib/mongo`.
-    *   Require the functions to test from `../lib/schedulingLogic.js` (`findAvailableFridays`, `scheduleSpeaker`, `getUpcomingSchedule`).
+1.  **Verify dev dependencies:** Ensure `tape`, `supertest`, and `mongodb-memory-server` are listed in `devDependencies` in `package.json`.
+2.  **Verify `package.json` script:** Ensure the `test` script in `scripts` is `"NODE_ENV=test node test/index.js"` or similar, invoking the test runner.
+3.  **Verify test runner (`test/index.js`):** Confirm this file correctly requires test files (e.g., using `glob` or similar) and handles overall setup/teardown, possibly including MongoDB memory server initialization and cleanup via helper functions (like those potentially in `test/helpers/`).
+4.  **Create `test/schedulingLogic.test.js` (if not already present):**
+    *   Require `test` from `tape`.
+    *   Require `mongoose` (likely from `../lib/mongo`).
+    *   Require the functions to test: `findAvailableFridays`, `scheduleSpeaker`, `getUpcomingSchedule` from `../lib/schedulingLogic.js`.
     *   Require the `ScheduledSpeaker` model from `../models/scheduledSpeaker`.
-    *   Use `test.before` to start `MongoMemoryServer` and connect Mongoose to it before tests run. Store the server instance.
-    *   Use `test.after.always` to disconnect Mongoose and stop the `MongoMemoryServer` after all tests.
-    *   Use `test.beforeEach` to clear the `scheduledSpeakers` collection before each test (`ScheduledSpeaker.deleteMany({})`).
-4.  **Write Tests for `findAvailableFridays`:**
-    *   Test case: No speakers scheduled - should return the next 3 Fridays.
-    *   Test case: One Friday booked - should return the next 3 available Fridays, skipping the booked one.
-    *   Test case: Multiple consecutive Fridays booked - should correctly find the next available ones after the booked block.
-    *   Test case: A Friday far in the future is booked - should not affect finding the *next* 3 available.
-    *   (Helper: You'll need a function to easily calculate the date of the next Friday, and the Friday after that, etc.).
-5.  **Write Tests for `scheduleSpeaker`:**
-    *   Test case: Successfully schedule a speaker - verify the document is saved correctly in the mock DB.
-    *   Test case: Attempt to schedule on an already booked date - verify the function throws the expected error or returns the specific conflict indicator (e.g., using `test.throwsAsync` or checking the return value).
-6.  **Write Tests for `getUpcomingSchedule`:**
-    *   Test case: No speakers scheduled - should return an empty array.
-    *   Test case: Multiple speakers scheduled (past and future) - should return only the upcoming ones, sorted by date, respecting the limit.
-    *   Test case: Exactly `limit` speakers scheduled for the future - should return all of them.
-    *   Test case: More than `limit` speakers scheduled - should return only the first `limit`.
-
-Ensure tests run cleanly via `npm test`.
+    *   **Leverage Runner/Helpers for Setup/Teardown:** Assume the test runner (`test/index.js`) or helper files handle the `MongoMemoryServer` setup and teardown. Individual test files typically don't need `test.before`/`test.after` for this if the runner manages it globally.
+    *   **Write Initial Tests using `tape` syntax:**
+        *   **`findAvailableFridays`:**
+            *   Test case: No speakers scheduled, should return `count` (e.g., 3) future Fridays.
+            *   Test case: One Friday is booked, should return the next `count` available Fridays, skipping the booked one.
+            *   Test case: Add several bookings and verify the correct available dates are returned.
+        *   **`scheduleSpeaker`:**
+            *   Test case: Successfully schedule a speaker for an available date. Verify the returned document and check the database directly.
+            *   Test case: Attempt to schedule a speaker for an *already booked* date. Verify it returns `null` or throws the expected error (based on the implementation) and *doesn't* add a duplicate entry.
+        *   **`getUpcomingSchedule`:**
+            *   Test case: No upcoming speakers, returns empty array.
+            *   Test case: Add several speakers (past and future dates). Verify it returns only future speakers, sorted correctly, and respects the `limit`.
+    *   **Cleanup:** Ensure each test cleans up any data it creates (e.g., `ScheduledSpeaker.deleteMany({})`) before calling `t.end()` to avoid interfering with other tests.
 ```
 
 ---
