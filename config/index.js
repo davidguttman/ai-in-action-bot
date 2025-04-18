@@ -4,8 +4,7 @@ const productionize = require('productionize')
 // Default configuration
 const defaults = {
   port: 3000,
-  mongoUri: 'mongodb://localhost:27017/',
-  mongoDbName: 'example',
+  mongoUri: 'mongodb://localhost:27017/example',
   googleProjectId: '',
   googleApplicationCredentials: '',
   authenticServer: '',
@@ -17,7 +16,6 @@ const config = {
   ...defaults,
   port: process.env.PORT || defaults.port,
   mongoUri: process.env.MONGO_URI || defaults.mongoUri,
-  mongoDbName: process.env.MONGO_DB_NAME || defaults.mongoDbName,
   googleProjectId: process.env.GOOGLE_PROJECT_ID || defaults.googleProjectId,
   googleApplicationCredentials: process.env.GOOGLE_APPLICATION_CREDENTIALS || defaults.googleApplicationCredentials,
   authenticServer: process.env.AUTHENTIC_SERVER || defaults.authenticServer,
