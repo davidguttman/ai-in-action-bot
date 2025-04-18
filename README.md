@@ -2,9 +2,7 @@
 
 This is a Discord bot designed to facilitate scheduling and potentially other AI-driven interactions within a Discord server. It leverages Large Language Models (LLMs) via OpenRouter and uses MongoDB for data persistence.
 
-![thread example](https://p199.p4.n0.cdn.zight.com/items/5zukX7J5/0d4a88c3-d314-4598-9dcb-ff091a26f375.png?v=58323f5b6e18aabe3af55ed73a0bfd1f)
-
-![ask example](https://p199.p4.n0.cdn.zight.com/items/5zukX7J5/0d4a88c3-d314-4598-9dcb-ff091a26f375.png?v=58323f5b6e18aabe3af55ed73a0bfd1f)
+![thread example](https://p199.p4.n0.cdn.zight.com/items/kpur5QKm/6b9b4a9c-6b18-4f64-9e12-ef1038c7b012.png?v=48d8735515e5d82ca15cc2ea1c68a5c7)
 ## Features
 
 *   **Discord Integration:** Interacts with users through Discord commands.
