@@ -1,4 +1,3 @@
-require('dotenv').config()
 const express = require('express')
 const config = require('./config')
 const mongoose = require('./lib/mongo')
@@ -39,13 +38,5 @@ app.use((err, req, res, next) => {
   // Handle other errors
   res.status(err.status || 500).json({ error: err.message || 'Internal Server Error' })
 })
-
-// Only start the server if this file is run directly
-if (require.main === module) {
-  const port = config.port
-  app.listen(port, () => {
-    console.log('Server started on port:', port)
-  })
-}
 
 module.exports = app 

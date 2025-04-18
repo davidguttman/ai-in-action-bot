@@ -21,6 +21,12 @@ const config = {
   googleProjectId: process.env.GOOGLE_PROJECT_ID || defaults.googleProjectId,
   googleApplicationCredentials: process.env.GOOGLE_APPLICATION_CREDENTIALS || defaults.googleApplicationCredentials,
   authenticServer: process.env.AUTHENTIC_SERVER || defaults.authenticServer,
+  discord: {
+    token: process.env.DISCORD_TOKEN,
+    clientId: process.env.DISCORD_CLIENT_ID,
+    guildId: process.env.DISCORD_GUILD_ID
+  },
+  openrouterApiKey: process.env.OPENROUTER_API_KEY,
   whitelist: (process.env.WHITELIST || defaults.whitelist.join(',')).split(',')
 }
 

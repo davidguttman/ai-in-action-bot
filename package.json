@@ -3,8 +3,10 @@
   "version": "1.0.0",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
-    "dev": "nodemon server.js",
+    "start": "node index.js",
+    "dev": "nodemon --exec \"npm run build && node index.js\"",
+    "build": "npm run deploy-commands",
+    "deploy-commands": "node lib/discord/deploy-commands.js",
     "test": "NODE_ENV=test node test/index.js"
   },
   "keywords": [
@@ -20,14 +22,18 @@
   "license": "MIT",
   "description": "A lightweight, illuminating Express.js starter template with MongoDB, authentication, and testing",
   "dependencies": {
+    "@discordjs/rest": "^2.4.3",
     "authentic-service": "^1.0.0",
     "cuid": "^3.0.0",
     "deasync": "^0.1.30",
+    "discord.js": "^14.18.0",
     "dotenv": "^16.4.7",
     "express": "^5.1.0",
     "healthpoint": "^1.0.0",
+    "isomorphic-fetch": "^3.0.0",
     "mongodb-memory-server": "^10.1.4",
     "mongoose": "^8.13.1",
+    "openai": "^4.95.1",
     "productionize": "^5.0.0",
     "supertest": "^7.1.0",
     "tape": "^5.9.0"
