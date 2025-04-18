@@ -1,115 +1,88 @@
-# Start Light Express 🌟
+# AI in Action Bot
 
-A lightweight, illuminating Express.js starter template that guides you toward production-ready Node.js applications.
+This is a Discord bot designed to facilitate scheduling and potentially other AI-driven interactions within a Discord server. It leverages Large Language Models (LLMs) via OpenRouter and uses MongoDB for data persistence.
 
-## Features ✨
+## Features
 
-- **Express Server**: Fast and minimalist web framework
-- **MongoDB Integration**: With Mongoose ORM and in-memory testing
-- **Authentication**: Built-in auth middleware with test environment support
-- **Testing**: Comprehensive test setup with tape and supertest
-- **Error Handling**: Automatic error catching and formatting
-- **Health Checks**: Built-in monitoring endpoint
-- **Environment Config**: Easy configuration with dotenv
-- **API Example**: Complete CRUD endpoints (Widgets API)
+*   **Discord Integration:** Interacts with users through Discord commands.
+*   **LLM Capabilities:** Uses external LLM services (currently configured for OpenRouter) for tasks like processing natural language or generating responses.
+*   **Scheduling Logic:** Contains logic for scheduling events or speakers (details likely found in `lib/schedulingLogic.js` and `models/scheduledSpeaker.js`).
+*   **MongoDB Persistence:** Stores scheduling information and potentially other data in a MongoDB database.
+*   **Web Server:** Includes a basic web server (likely for health checks or simple API endpoints).
 
-## Quick Start 🚀
+## Project Structure
 
-1. Clone and install:
-```bash
-git clone https://github.com/davidguttman/start-light-express.git
-cd start-light-express
-npm install
+```
+.
+├── README.md           # This file
+├── api/                # API route definitions (likely for the web server)
+├── config/             # Configuration files (e.g., API keys, DB connection)
+├── docs/               # Project documentation (plans, specs, tutorials)
+├── index.js            # Main application entry point
+├── lib/                # Core application logic
+│   ├── discord/        # Discord bot specific logic (commands, connection)
+│   ├── llm/            # LLM integration logic
+│   ├── mongo/          # MongoDB connection and helper logic
+│   └── schedulingLogic.js # Logic related to scheduling
+├── middleware/         # Express middleware (e.g., authentication)
+├── models/             # Mongoose models for database schemas
+├── package.json        # Project dependencies and scripts
+├── package-lock.json   # Exact dependency versions
+├── server.js           # Web server setup (Express)
+└── test/               # Automated tests
 ```
 
-2. Copy `.env.example` to `.env`:
-```bash
-cp .env.example .env
-```
+## Getting Started
 
-3. Configure your environment variables:
-```env
-PORT=3000
-MONGO_URI=mongodb://localhost:27017/
-MONGO_DB_NAME=example
-GOOGLE_PROJECT_ID=your-project-id
-GOOGLE_APPLICATION_CREDENTIALS=path/to/credentials.json
-AUTHENTIC_SERVER=your-authentic-server
-WHITELIST=email1@example.com,email2@example.com
-```
+### Prerequisites
 
-4. Start developing:
-```bash
-npm run dev
-```
+*   Node.js and npm
+*   MongoDB instance (local or remote)
+*   Discord Bot Token
+*   OpenRouter API Key
 
-## Development 💻
+### Installation
 
-The development server will restart on file changes:
-```bash
-npm run dev
-```
+1.  Clone the repository:
+    ```bash
+    git clone <repository-url>
+    cd ai-in-action-bot
+    ```
+2.  Install dependencies:
+    ```bash
+    npm install
+    ```
+3.  Configure environment variables: Create a `.env` file in the root directory and add the necessary variables (refer to `config/index.js` for required variables like `MONGODB_URI`, `DISCORD_TOKEN`, `OPENROUTER_API_KEY`, `CLIENT_ID`, `GUILD_ID`).
 
-## Testing 🧪
+    Example `.env` file:
+    ```dotenv
+    MONGODB_URI=mongodb://localhost:27017/aiia-bot
+    DISCORD_TOKEN=your_discord_bot_token
+    OPENROUTER_API_KEY=your_openrouter_api_key
+    CLIENT_ID=your_discord_client_id
+    GUILD_ID=your_discord_guild_id
+    # Add any other required variables from config/index.js
+    ```
+
+### Running the Bot
+
+1.  Deploy Discord commands:
+    ```bash
+    node lib/discord/deploy-commands.js
+    ```
+2.  Start the bot and server:
+    ```bash
+    npm start
+    ```
+
+## Testing
 
 Run the test suite:
+
 ```bash
 npm test
 ```
 
-Features:
-- Tape for lightweight testing
-- Supertest for HTTP assertions
-- In-memory MongoDB for database tests
-- Predictable test authentication
+## Contributing
 
-## Production 🌎
-
-1. Set your production environment variables
-2. Start the server:
-```bash
-npm start
-```
-
-## Project Structure 📁
-
-```
-.
-├── api/              # API routes
-├── config/           # Configuration
-├── lib/             # Shared libraries
-├── middleware/      # Express middleware
-├── models/          # Mongoose models
-├── test/            # Test files
-├── .env.example     # Example environment variables
-├── package.json     # Project configuration
-└── server.js        # Application entry point
-```
-
-## API Endpoints 🛣️
-
-- `GET /health` - Health check
-- `GET /widgets` - List widgets
-- `POST /widgets` - Create widget
-- `GET /widgets/:id` - Get widget
-- `PUT /widgets/:id` - Update widget
-- `DELETE /widgets/:id` - Delete widget
-
-## Code Style 📝
-
-This project follows standard.js style:
-- No semicolons
-- 2 spaces
-- Single quotes
-- No var
-- Arrow functions
-- Object shorthand
-- No classes
-
-## Contributing 🤝
-
-Pull requests are welcome! For major changes, please open an issue first to discuss what you would like to change.
-
-## License 📄
-
-MIT © [David Guttman](http://davidguttman.com/) 
+Please refer to the documentation in the `docs/` directory for contribution guidelines, specifications, and tutorials. 
