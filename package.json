@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "main": "server.js",
   "scripts": {
-    "start": "node index.js",
-    "dev": "nodemon --exec \"npm run build && node index.js\"",
+    "start": "npm run build && node index.js",
+    "dev": "nodemon --exec \"npm start\"",
     "build": "npm run deploy-commands",
     "deploy-commands": "node lib/discord/deploy-commands.js",
     "test": "NODE_ENV=test node test/index.js"
