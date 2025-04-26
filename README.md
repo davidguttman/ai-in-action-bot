@@ -6,7 +6,7 @@ This is a Discord bot designed to facilitate scheduling and potentially other AI
 ## Features
 
 *   **Discord Integration:** Interacts with users through Discord commands.
-*   **LLM Capabilities:** Uses external LLM services (currently configured for OpenRouter) for tasks like processing natural language or generating responses.
+*   **LLM Capabilities:** Uses external LLM services (currently configured for OpenRouter) for tasks like processing natural language.
 *   **Scheduling Logic:** Contains logic for scheduling events or speakers (details likely found in `lib/schedulingLogic.js` and `models/scheduledSpeaker.js`).
 *   **MongoDB Persistence:** Stores scheduling information and potentially other data in a MongoDB database.
 *   **Web Server:** Includes a basic web server (likely for health checks or simple API endpoints).
