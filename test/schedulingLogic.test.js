@@ -4,7 +4,8 @@ const ScheduledSpeaker = require('../models/scheduledSpeaker')
 const {
   findAvailableFridays,
   scheduleSpeaker,
-  getUpcomingSchedule
+  getUpcomingSchedule,
+  cancelSpeaker
 } = require('../lib/schedulingLogic')
 
 // Helper function to get the date for the next specific day of the week (0=Sun, 5=Fri)
@@ -170,6 +171,89 @@ test('schedulingLogic - getUpcomingSchedule - respect limit', async (t) => {
   t.equal(schedule.length, limit, `should return exactly ${limit} speakers`)
   t.equal(schedule[0].discordUsername, 'futureUser0', 'first speaker should be correct')
   t.equal(schedule[limit - 1].discordUsername, `futureUser${limit - 1}`, 'last speaker should be correct based on limit')
+
+  await ScheduledSpeaker.deleteMany({}) // Cleanup
+  t.end()
+})
+
+test('schedulingLogic - cancelSpeaker - successful cancellation', async (t) => {
+  await ScheduledSpeaker.deleteMany({}) // Clean slate
+  const userId = 'userToCancel'
+  const futureDate = getNextDayOfWeek(5)
+  const topic = 'Talk to Cancel'
+
+  // Schedule a talk for the user
+  await scheduleSpeaker({
+    discordUserId: userId,
+    discordUsername: 'cancelMe',
+    topic: topic,
+    scheduledDate: futureDate
+  })
+
+  // Verify it was scheduled
+  const speakerBefore = await ScheduledSpeaker.findOne({ discordUserId: userId })
+  t.ok(speakerBefore, 'Speaker should exist before cancellation')
+
+  // Attempt cancellation
+  const cancelledTalk = await cancelSpeaker(userId)
+
+  t.ok(cancelledTalk, 'cancelSpeaker should return the cancelled document')
+  t.equal(cancelledTalk.discordUserId, userId, 'Returned document should have correct userId')
+  t.equal(cancelledTalk.topic, topic, 'Returned document should have correct topic')
+  t.equal(cancelledTalk.scheduledDate.toISOString(), futureDate.toISOString(), 'Returned document should have correct date')
+
+  // Verify it's gone from DB
+  const speakerAfter = await ScheduledSpeaker.findOne({ discordUserId: userId })
+  t.notOk(speakerAfter, 'Speaker should not exist after cancellation')
+
+  await ScheduledSpeaker.deleteMany({}) // Cleanup
+  t.end()
+})
+
+test('schedulingLogic - cancelSpeaker - no upcoming talk found', async (t) => {
+  await ScheduledSpeaker.deleteMany({}) // Clean slate
+  const userId = 'userWithNoTalk'
+
+  // Attempt cancellation
+  const result = await cancelSpeaker(userId)
+
+  t.equal(result, null, 'cancelSpeaker should return null when no talk is found')
+
+  // Verify DB is still empty for this user
+  const speaker = await ScheduledSpeaker.findOne({ discordUserId: userId })
+  t.notOk(speaker, 'No speaker should exist for the user')
+
+  t.end()
+})
+
+test('schedulingLogic - cancelSpeaker - only past talk exists', async (t) => {
+  await ScheduledSpeaker.deleteMany({}) // Clean slate
+  const userId = 'userWithPastTalk'
+  const pastDate = new Date()
+  pastDate.setDate(pastDate.getDate() - 7) // 1 week ago
+  pastDate.setUTCHours(0, 0, 0, 0)
+
+  // Schedule a talk in the past
+  await new ScheduledSpeaker({
+    discordUserId: userId,
+    discordUsername: 'pastSpeaker',
+    topic: 'Old Talk',
+    scheduledDate: pastDate
+  }).save()
+
+  // Verify it was scheduled
+  const speakerBefore = await ScheduledSpeaker.findOne({ discordUserId: userId })
+  t.ok(speakerBefore, 'Speaker with past date should exist before cancellation attempt')
+
+  // Attempt cancellation
+  const result = await cancelSpeaker(userId)
+
+  t.equal(result, null, 'cancelSpeaker should return null when only a past talk exists')
+
+  // Verify the past talk is still in DB
+  const speakerAfter = await ScheduledSpeaker.findOne({ discordUserId: userId })
+  t.ok(speakerAfter, 'Speaker with past date should still exist after cancellation attempt')
+  t.equal(speakerAfter.scheduledDate.toISOString(), pastDate.toISOString(), 'The remaining speaker should be the past one')
 
   await ScheduledSpeaker.deleteMany({}) // Cleanup
   t.end()
