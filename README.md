@@ -15,6 +15,7 @@ This is a Discord bot designed to facilitate scheduling and potentially other AI
 
 ```
 .
+├── Dockerfile          # Docker configuration
 ├── README.md           # This file
 ├── api/                # API route definitions (likely for the web server)
 ├── config/             # Configuration files (e.g., API keys, DB connection)
@@ -75,6 +76,28 @@ This is a Discord bot designed to facilitate scheduling and potentially other AI
     ```bash
     npm start
     ```
+
+## Running with Docker
+
+1.  **Build the Docker image:**
+    ```bash
+    docker build -t ai-in-action-bot .
+    ```
+
+2.  **Run the Docker container:**
+
+    You need to provide the necessary environment variables when running the container. Create a `.env` file as described in the Installation section.
+
+    ```bash
+    # Make sure your .env file is in the current directory
+    docker run --env-file .env -p 3000:3000 --name aiia-bot-instance ai-in-action-bot
+    ```
+
+    *   `--env-file .env`: Loads environment variables from your `.env` file.
+    *   `-p 3000:3000`: Maps port 3000 on your host to port 3000 in the container.
+    *   `--name aiia-bot-instance`: Assigns a name to the container for easier management.
+
+    The bot should now be running inside the Docker container.
 
 ## Testing
 
