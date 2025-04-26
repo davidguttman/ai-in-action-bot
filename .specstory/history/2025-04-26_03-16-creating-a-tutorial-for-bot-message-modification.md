@@ -488,7 +488,63 @@ The task is complete.
 
 ---
 
+_**User**_
 
+what is the guild id env var used for?
+
+---
+
+_**Assistant**_
+
+
+
+---
+
+Okay Big D, let's figure out what that `GUILD_ID` environment variable is used for.
+
+Based on standard Discord bot practices and the project structure, the most common use for a specific Guild ID during development is for registering slash commands instantly to a single server (your test server) instead of waiting for the global registration process (which can take up to an hour).
+
+To confirm this, I'll check the command deployment script.
+
+---
+
+Read file: lib/discord/deploy-commands.js
+
+---
+
+Exactly as suspected, Big D.
+
+The script `lib/discord/deploy-commands.js` uses the `GUILD_ID` environment variable (accessed via `require('../../config').discord.guildId`) when registering the bot's slash commands.
+
+Specifically, this line:
+```javascript
+rest.put(Routes.applicationGuildCommands(clientId, guildId), { body: commands })
+```
+tells Discord to immediately update the commands for *only* the server identified by `guildId`. This is much faster for development and testing than registering commands globally.
+
+---
+
+_**User**_
+
+Create a new markdown file in the tutorials directory. It should be in the same style as previous tutorials. USE ls/tree to see the files in the codebase, and then write a detailed step-by-step tutorial that shows how to limit responses to a single guild
+
+Finally, use ls and check if file has been created
+
+---
+
+_**Assistant**_
+
+
+
+---
+
+Okay Big D, I can create that tutorial for you.
+
+First, let's refresh our view of the project structure and check `PROJECT.md`.
+
+---
+
+Read file: PROJECT.md
 
 ---
 
