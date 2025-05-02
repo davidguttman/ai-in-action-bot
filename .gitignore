@@ -4,3 +4,5 @@ coverage/
 .DS_Store
 *.log 
 !.specstory
+# SpecStory explanation file
+.specstory/.what-is-this.md
