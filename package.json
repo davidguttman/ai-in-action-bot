@@ -7,6 +7,7 @@
     "dev": "nodemon --exec \"npm start\"",
     "build": "npm run deploy-commands",
     "deploy-commands": "node lib/discord/deploy-commands.js",
+    "lint": "prettier-eslint --write --no-semi --single-quote \"**/*.js\"",
     "test": "NODE_ENV=test node test/index.js"
   },
   "keywords": [
@@ -39,6 +40,7 @@
     "tape": "^5.9.0"
   },
   "devDependencies": {
-    "nodemon": "^3.1.0"
+    "nodemon": "^3.1.0",
+    "prettier-eslint-cli": "^8.0.1"
   }
 }
