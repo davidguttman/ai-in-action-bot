@@ -25,6 +25,10 @@ const scheduledSpeakerSchema = new mongoose.Schema({
   threadId: {
     type: String,
   },
+  talkCompleted: {
+    type: Boolean,
+    default: false,
+  },
 })
 
 const ScheduledSpeaker = mongoose.model(
