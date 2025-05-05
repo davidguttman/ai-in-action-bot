@@ -6,9 +6,7 @@ const mongoose = require('../../lib/mongo')
 const server = require('../../server')
 
 test('health endpoint - successful check', async (t) => {
-  const res = await supertest(server)
-    .get('/health')
-    .expect(200)
+  const res = await supertest(server).get('/health').expect(200)
 
   t.equal(res.body.status, 'OK')
   t.end()
@@ -21,9 +19,7 @@ test('health endpoint - database error', async (t) => {
     throw new Error('Database connection failed')
   }
 
-  const res = await supertest(server)
-    .get('/health')
-    .expect(500)
+  const res = await supertest(server).get('/health').expect(500)
 
   t.equal(res.body.error, 'Database connection failed')
 

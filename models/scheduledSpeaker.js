@@ -3,30 +3,33 @@ const mongoose = require('mongoose')
 const scheduledSpeakerSchema = new mongoose.Schema({
   discordUserId: {
     type: String,
-    required: true
+    required: true,
   },
   discordUsername: {
     type: String,
-    required: true
+    required: true,
   },
   topic: {
     type: String,
-    required: true
+    required: true,
   },
   scheduledDate: {
     type: Date,
     required: true,
-    unique: true
+    unique: true,
   },
   bookingTimestamp: {
     type: Date,
-    default: Date.now
+    default: Date.now,
   },
   threadId: {
-    type: String
-  }
+    type: String,
+  },
 })
 
-const ScheduledSpeaker = mongoose.model('ScheduledSpeaker', scheduledSpeakerSchema)
+const ScheduledSpeaker = mongoose.model(
+  'ScheduledSpeaker',
+  scheduledSpeakerSchema,
+)
 
-module.exports = ScheduledSpeaker 
+module.exports = ScheduledSpeaker

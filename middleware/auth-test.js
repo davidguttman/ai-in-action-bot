@@ -1,11 +1,11 @@
 const config = require('../config')
 
-function authTestMiddleware (req, res, next) {
+function authTestMiddleware(req, res, next) {
   // In test environment, we'll use a predictable test user
   const testUser = {
     email: 'test@example.com',
     id: 'test-user-id',
-    name: 'Test User'
+    name: 'Test User',
   }
 
   // Verify the test token format

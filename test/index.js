@@ -14,20 +14,19 @@ const timeout = setTimeout(() => {
 
 // Get files to test - either from args or find all test files
 
-const specifiedFiles = process.argv.slice(2).length > 0
-  ? process.argv.slice(2)
-  : getAllTestFiles()
+const specifiedFiles =
+  process.argv.slice(2).length > 0 ? process.argv.slice(2) : getAllTestFiles()
 
 const filesToTest = specifiedFiles.map(relativeToRequire)
 
 // Load all test files - tape will run them in sequence
-filesToTest.forEach(file => {
-  test(`File: ${file}`, t => t.end())
+filesToTest.forEach((file) => {
+  test(`File: ${file}`, (t) => t.end())
   require(file)
 })
 
 // Run final cleanup after all tests complete
-test('cleanup', async t => {
+test('cleanup', async (t) => {
   console.log('Running final cleanup...')
   try {
     await cleanup()
@@ -41,13 +40,13 @@ test('cleanup', async t => {
   }
 })
 
-function getAllTestFiles () {
+function getAllTestFiles() {
   return glob.sync('**/*.test.js', {
     cwd: __dirname,
-    ignore: ['node_modules/**', 'helpers/**']
+    ignore: ['node_modules/**', 'helpers/**'],
   })
 }
 
-function relativeToRequire (relativePath) {
+function relativeToRequire(relativePath) {
   return './' + relativePath.replace(/^test\//, '').replace(/\.js$/, '')
 }

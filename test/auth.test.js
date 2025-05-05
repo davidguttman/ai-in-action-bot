@@ -10,9 +10,7 @@ app.use('/test', ...middleware, (req, res) => {
 })
 
 test('auth middleware - no token', async (t) => {
-  const res = await supertest(app)
-    .get('/test')
-    .expect(401)
+  const res = await supertest(app).get('/test').expect(401)
 
   t.equal(res.body.error, 'No bearer token provided')
   t.end()

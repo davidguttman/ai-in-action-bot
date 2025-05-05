@@ -12,11 +12,15 @@ const app = express()
 app.use(express.json())
 
 // Health check endpoint
-app.get('/health', healthpoint(function (callback) {
-  mongoose.checkHealth()
-    .then(() => callback(null))
-    .catch(err => callback(err))
-}))
+app.get(
+  '/health',
+  healthpoint(function (callback) {
+    mongoose
+      .checkHealth()
+      .then(() => callback(null))
+      .catch((err) => callback(err))
+  }),
+)
 
 // API routes
 app.use('/auth', authMiddleware, authTestRouter)
@@ -27,14 +31,16 @@ app.use((err, req, res, next) => {
   if (process.env.NODE_ENV !== 'test') {
     console.error('Unhandled error:', err)
   }
-  
+
   // Handle validation errors
   if (err.name === 'ValidationError') {
     return res.status(400).json({ error: err.message })
   }
-  
+
   // Handle other errors
-  res.status(err.status || 500).json({ error: err.message || 'Internal Server Error' })
+  res
+    .status(err.status || 500)
+    .json({ error: err.message || 'Internal Server Error' })
 })
 
-module.exports = app 
+module.exports = app
