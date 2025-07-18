@@ -25,6 +25,7 @@ const config = {
     token: process.env.DISCORD_TOKEN,
     clientId: process.env.DISCORD_CLIENT_ID,
     guildId: process.env.DISCORD_GUILD_ID,
+    logsChannelId: process.env.DISCORD_LOGS_CHANNEL_ID,
   },
   openrouterApiKey: process.env.OPENROUTER_API_KEY,
   whitelist: (process.env.WHITELIST || defaults.whitelist.join(',')).split(','),
