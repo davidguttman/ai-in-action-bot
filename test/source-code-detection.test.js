@@ -24,7 +24,7 @@ test('source code detection - keyword matching', (t) => {
     { input: 'git repository', expected: true },
     { input: 'GITHUB REPO', expected: true }, // case insensitive
     { input: 'I need the Source Code', expected: true }, // mixed case
-    
+
     // Should NOT detect as source code queries
     { input: 'sign up', expected: false },
     { input: 'view schedule', expected: false },
@@ -37,13 +37,13 @@ test('source code detection - keyword matching', (t) => {
 
   testCases.forEach(({ input, expected }) => {
     const messageContainsSourceCodeQuery = sourceCodeKeywords.some((keyword) =>
-      input.toLowerCase().includes(keyword.toLowerCase())
+      input.toLowerCase().includes(keyword.toLowerCase()),
     )
-    
+
     t.equal(
       messageContainsSourceCodeQuery,
       expected,
-      `Input "${input}" should ${expected ? 'detect' : 'not detect'} source code query`
+      `Input "${input}" should ${expected ? 'detect' : 'not detect'} source code query`,
     )
   })
 
@@ -51,14 +51,52 @@ test('source code detection - keyword matching', (t) => {
 })
 
 test('source code response message format', (t) => {
-  const expectedResponse = 'You can find the source code here: https://github.com/davidguttman/ai-in-action-bot'
-  
+  const expectedResponse =
+    'You can find the source code here: https://github.com/davidguttman/ai-in-action-bot'
+
   // Verify the response contains the correct GitHub URL
-  t.ok(expectedResponse.includes('https://github.com/davidguttman/ai-in-action-bot'), 
-    'Response should contain the correct GitHub repository URL')
-  
-  t.ok(expectedResponse.includes('You can find the source code here:'), 
-    'Response should contain the expected intro text')
-  
+  t.ok(
+    expectedResponse.includes(
+      'https://github.com/davidguttman/ai-in-action-bot',
+    ),
+    'Response should contain the correct GitHub repository URL',
+  )
+
+  t.ok(
+    expectedResponse.includes('You can find the source code here:'),
+    'Response should contain the expected intro text',
+  )
+
+  t.end()
+})
+
+test('/source slash command', (t) => {
+  const sourceCommand = require('../lib/discord/commands/source')
+
+  // Verify command structure
+  t.ok(sourceCommand.data, 'Command should have data property')
+  t.ok(sourceCommand.execute, 'Command should have execute function')
+  t.equal(sourceCommand.data.name, 'source', 'Command name should be "source"')
+  t.equal(
+    sourceCommand.data.description,
+    'Get the GitHub source code repository link',
+    'Command should have correct description',
+  )
+
+  // Mock interaction for testing
+  const mockInteraction = {
+    reply: (message) => {
+      t.equal(
+        message,
+        'You can find the source code here: https://github.com/davidguttman/ai-in-action-bot',
+        'Slash command should return correct GitHub repository message',
+      )
+      return Promise.resolve()
+    },
+  }
+
+  // Test command execution
+  sourceCommand.execute(mockInteraction)
+
   t.end()
 })
