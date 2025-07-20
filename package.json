@@ -30,6 +30,7 @@
     "discord.js": "^14.18.0",
     "dotenv": "^16.4.7",
     "express": "^5.1.0",
+    "glob": "^11.0.3",
     "healthpoint": "^1.0.0",
     "isomorphic-fetch": "^3.0.0",
     "mongodb-memory-server": "^10.1.4",
