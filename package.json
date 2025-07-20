@@ -41,6 +41,7 @@
   },
   "devDependencies": {
     "nodemon": "^3.1.0",
-    "prettier-eslint-cli": "^8.0.1"
+    "prettier-eslint-cli": "^8.0.1",
+    "proxyquire": "^2.1.3"
   }
 }
