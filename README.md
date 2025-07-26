@@ -64,6 +64,7 @@ This is a Discord bot designed to facilitate scheduling and potentially other AI
     CLIENT_ID=your_discord_client_id
     GUILD_ID=your_discord_guild_id
     ZOOM_LINK=https://zoom.us/j/yourmeetingid
+    ZOOM_PASSWORD=yourpassword
     # Add any other required variables from config/index.js
     ```
 
