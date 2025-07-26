@@ -33,7 +33,7 @@ npm run lint        # Format code with prettier-eslint (no semicolons, single qu
 1. **Discord Bot** (`lib/discord/index.js`):
    - Message-based interactions using @mentions for speaker signup flow
    - Thread-based signup process with state management
-   - Intent detection via LLM for: sign_up, view_schedule, cancel_talk, query_talks
+   - Intent detection via LLM for: sign_up, view_schedule, cancel_talk, query_talks, zoom_link
    - Active signup tracking in memory with thread-based conversations
 
 2. **Scheduling Logic** (`lib/schedulingLogic.js`):
@@ -58,6 +58,8 @@ Required environment variables (see `config/index.js`):
 - `DISCORD_GUILD_ID` - Target Discord server ID (bot only operates in this guild)
 - `OPENROUTER_API_KEY` - API key for LLM requests
 - `MONGO_URI` or `MONGODB_URI` - MongoDB connection string (defaults to localhost)
+- `ZOOM_LINK` - Zoom meeting link to share when users request it
+- `ZOOM_PASSWORD` - Zoom meeting password (optional)
 
 ### Key Workflows
 
