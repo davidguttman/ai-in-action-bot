@@ -88,3 +88,8 @@ node test/index.js schedulingLogic.test.js  # Run specific test file
 - All dates are normalized to midnight UTC for consistency
 - Thread-based signup state is maintained in memory (not persisted)
 - Deploy Discord commands before first run or after command changes
+
+## CI/CD Workflows
+
+### Staging Reset Action
+The repository includes a GitHub Action (`.github/workflows/reset-staging.yml`) that automatically resets the `staging` branch to match `main` whenever code is pushed to the main branch. This ensures staging always reflects the latest production code.
