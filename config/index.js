@@ -27,6 +27,7 @@ const config = {
     guildId: process.env.DISCORD_GUILD_ID,
   },
   openrouterApiKey: process.env.OPENROUTER_API_KEY,
+  zoomLink: process.env.ZOOM_LINK,
   whitelist: (process.env.WHITELIST || defaults.whitelist.join(',')).split(','),
 }
 
