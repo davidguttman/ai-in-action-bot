@@ -59,6 +59,7 @@ Required environment variables (see `config/index.js`):
 - `OPENROUTER_API_KEY` - API key for LLM requests
 - `MONGO_URI` or `MONGODB_URI` - MongoDB connection string (defaults to localhost)
 - `ZOOM_LINK` - Zoom meeting link to share when users request it
+- `ZOOM_PASSWORD` - Zoom meeting password (optional)
 
 ### Key Workflows
 
