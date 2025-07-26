@@ -1,0 +1,36 @@
+name: Reset Staging to Main
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  reset-staging:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+      
+      - name: Reset staging branch to main
+        run: |
+          # Fetch all branches
+          git fetch origin
+          
+          # Checkout staging branch
+          git checkout staging || git checkout -b staging origin/staging
+          
+          # Reset staging to match main
+          git reset --hard origin/main
+          
+          # Force push to update remote staging
+          git push origin staging --force
