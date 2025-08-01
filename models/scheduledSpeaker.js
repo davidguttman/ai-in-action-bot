@@ -29,6 +29,12 @@ const scheduledSpeakerSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  schedulerUserId: {
+    type: String,
+  },
+  schedulerUsername: {
+    type: String,
+  },
 })
 
 const ScheduledSpeaker = mongoose.model(
