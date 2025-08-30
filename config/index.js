@@ -15,7 +15,7 @@ const defaults = {
 const config = {
   ...defaults,
   port: process.env.PORT || defaults.port,
-  mongoUri: process.env.MONGO_URI || defaults.mongoUri,
+  mongoUri: process.env.MONGODB_URI || defaults.mongoUri,
   googleProjectId: process.env.GOOGLE_PROJECT_ID || defaults.googleProjectId,
   googleApplicationCredentials:
     process.env.GOOGLE_APPLICATION_CREDENTIALS ||

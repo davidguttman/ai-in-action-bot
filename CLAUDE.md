@@ -57,7 +57,7 @@ Required environment variables (see `config/index.js`):
 - `DISCORD_CLIENT_ID` - Discord application client ID  
 - `DISCORD_GUILD_ID` - Target Discord server ID (bot only operates in this guild)
 - `OPENROUTER_API_KEY` - API key for LLM requests
-- `MONGO_URI` or `MONGODB_URI` - MongoDB connection string (defaults to localhost)
+- `MONGODB_URI` - MongoDB connection string (defaults to localhost)
 - `ZOOM_LINK` - Zoom meeting link to share when users request it
 - `ZOOM_PASSWORD` - Zoom meeting password (optional)
 

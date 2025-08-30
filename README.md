@@ -54,15 +54,15 @@ This is a Discord bot designed to facilitate scheduling and potentially other AI
     ```bash
     npm install
     ```
-3.  Configure environment variables: Create a `.env` file in the root directory and add the necessary variables (refer to `config/index.js` for required variables like `MONGODB_URI`, `DISCORD_TOKEN`, `OPENROUTER_API_KEY`, `CLIENT_ID`, `GUILD_ID`).
+3.  Configure environment variables: Create a `.env` file in the root directory and add the necessary variables (refer to `config/index.js` for required variables like `MONGODB_URI`, `DISCORD_TOKEN`, `OPENROUTER_API_KEY`, `DISCORD_CLIENT_ID`, `DISCORD_GUILD_ID`).
 
     Example `.env` file:
     ```dotenv
     MONGODB_URI=mongodb://localhost:27017/aiia-bot
     DISCORD_TOKEN=your_discord_bot_token
     OPENROUTER_API_KEY=your_openrouter_api_key
-    CLIENT_ID=your_discord_client_id
-    GUILD_ID=your_discord_guild_id
+    DISCORD_CLIENT_ID=your_discord_client_id
+    DISCORD_GUILD_ID=your_discord_guild_id
     ZOOM_LINK=https://zoom.us/j/yourmeetingid
     ZOOM_PASSWORD=yourpassword
     # Add any other required variables from config/index.js
