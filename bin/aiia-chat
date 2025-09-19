@@ -52,7 +52,8 @@ attachRenderers(channel)
 // Prompt
 const rl = readline.createInterface({ input: process.stdin, output: process.stdout })
 function promptName() {
-  return currentChannel.isThread() ? `#${currentChannel.name}> ` : `#${currentChannel.name}> `
+  if (currentChannel.isThread()) return `#${currentChannel.name} <${currentChannel.id}> `
+  return `#${currentChannel.name}> `
 }
 function updatePrompt() {
   rl.setPrompt(promptName())
@@ -64,8 +65,8 @@ printSystem(`Channel: #${currentChannel.name}`)
 printSystem(`Active user: @${currentUser.username}`)
 printSystem(`Mention the bot with "@${botName}" to begin`)
 printSystem('Type /help to see available CLI slash commands')
-printSystem('Examples: /as @alice, /users, /switch <id|name>, /quit')
-printSystem('Tip: use /switch <parent-name-or-id> to leave a thread')
+printSystem('Examples: /as @alice, /users, /threads, /switch <id|name>, /quit')
+printSystem('Tip: use /threads to list thread IDs or /switch <parent-name-or-id> to leave a thread')
 updatePrompt()
 
 const handleMessage = createMessageHandler({ client, activeSignups, guildId })
@@ -76,7 +77,7 @@ rl.on('line', async (line) => {
 
   // REPL commands
   if (input.startsWith('/help')) {
-    printSystem('Commands: /as <@user|name>, /users, /switch <threadId>, /help, /quit')
+    printSystem('Commands: /as <@user|name>, /users, /threads, /switch <threadId>, /help, /quit')
     return updatePrompt()
   }
   if (input === '/quit' || input === '/exit') {
@@ -92,6 +93,21 @@ rl.on('line', async (line) => {
   if (input === '/users') {
     const list = Array.from(client._users.values()).map((u) => `@${u.username} <${u.id}>${u.bot ? ' [bot]' : ''}`)
     printSystem(list.join('\n'))
+    return updatePrompt()
+  }
+  if (input === '/threads') {
+    const baseChannel = currentChannel.isThread() ? currentChannel.parent : currentChannel
+    const threads = (baseChannel && baseChannel.threads) || {}
+    const entries = Object.values(threads)
+    if (!entries.length) {
+      printSystem('No threads available in this channel')
+      return updatePrompt()
+    }
+    const lines = entries.map((thread) => {
+      const active = thread.id === currentChannel.id ? ' [current]' : ''
+      return `#${thread.name} <${thread.id}>${active}`
+    })
+    printSystem(lines.join('\n'))
     return updatePrompt()
   }
   if (input.startsWith('/switch ')) {
@@ -132,4 +148,3 @@ rl.on('close', () => {
   printSystem('Bye!')
   process.exit(0)
 })
-
