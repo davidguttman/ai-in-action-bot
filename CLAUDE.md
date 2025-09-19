@@ -84,6 +84,36 @@ npm test                    # Run all tests
 node test/index.js schedulingLogic.test.js  # Run specific test file
 ```
 
+## Local Chat REPL (tmux workflow)
+
+Use `bin/aiia-chat` to simulate Discord conversations locally without hitting Discord or MongoDB services.
+
+1. Keep the REPL running in the background:
+   ```bash
+   tmux new-session -d -s aiia './bin/aiia-chat'
+   ```
+2. Inspect bot output whenever you need context:
+   ```bash
+   tmux capture-pane -pt aiia
+   # or attach interactively: tmux attach -t aiia
+   ```
+3. Send messages and commands programmatically:
+   ```bash
+   tmux send-keys -t aiia '@bot I want to give a talk about AI' Enter
+   tmux send-keys -t aiia '/as @bob' Enter
+   tmux send-keys -t aiia '/switch general' Enter
+   ```
+4. Exit cleanly when finished:
+   ```bash
+   tmux send-keys -t aiia '/quit' Enter
+   tmux kill-session -t aiia  # fallback if the REPL hangs
+   ```
+
+Tips:
+- Mentions must be written exactly as they would be in Discord (`@bot`, `@alice`).
+- `/users` shows simulated accounts, `/as` changes the speaking user, and `/switch` hops between the main channel and spawned threads.
+- Re-run `tmux capture-pane -pt aiia` after each `tmux send-keys` call to confirm the bot’s response.
+
 ## Important Notes
 
 - The bot is restricted to operate only in the configured guild (DISCORD_GUILD_ID)

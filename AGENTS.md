@@ -32,6 +32,14 @@ Examples:
 - Aim to cover routes, middleware, Mongo helpers, and Discord command logic with unit/integration tests.
 - Cleanups run via `test/helpers/cleanup.js`; avoid relying on external services in tests.
 
+## Interactive Testing With `bin/aiia-chat`
+- Use the REPL script to simulate Discord conversations locally without the real bot.
+- Launch it inside tmux so you can send commands programmatically while keeping the session running: `tmux new-session -d -s aiia './bin/aiia-chat'`.
+- Inspect output with `tmux capture-pane -pt aiia` (repeat to watch the conversation) or attach directly with `tmux attach -t aiia` for manual exploration.
+- Send user or slash-command input with `tmux send-keys -t aiia '<message text>' Enter`; represent mentions exactly as in Discord (e.g., `@bot hi`).
+- Switch simulated users with `/as @username`, move between threads with `/switch <parent-or-thread>`, and exit cleanly using `/quit`.
+- When finished, close the REPL (`/quit`) or kill the tmux session: `tmux kill-session -t aiia`.
+
 ## Commit & Pull Request Guidelines
 - Commits: short, imperative subject; reference issues/PRs when relevant (e.g., "Update help message (#23)").
 - PRs must include: concise description, linked issues, test coverage notes, local run steps, and screenshots/logs for Discord flows when applicable.
