@@ -23,6 +23,23 @@ function getNextDayOfWeek(dayOfWeek, startingDate = new Date()) {
   return resultDate
 }
 
+// Helper function to get the current or next Friday
+function getCurrentOrNextFriday(startingDate = new Date()) {
+  const resultDate = new Date(startingDate)
+  resultDate.setUTCHours(0, 0, 0, 0) // Normalize to midnight UTC
+  const dayOfWeek = resultDate.getUTCDay()
+
+  if (dayOfWeek === 5) {
+    return resultDate
+  } else {
+    // Calculate days until next Friday
+    const daysUntilFriday = (5 - dayOfWeek + 7) % 7
+    const daysToAdd = daysUntilFriday === 0 ? 7 : daysUntilFriday
+    resultDate.setUTCDate(resultDate.getUTCDate() + daysToAdd)
+    return resultDate
+  }
+}
+
 test('schedulingLogic - findAvailableFridays - no speakers scheduled', async (t) => {
   await ScheduledSpeaker.deleteMany({}) // Clean slate
 
@@ -31,7 +48,7 @@ test('schedulingLogic - findAvailableFridays - no speakers scheduled', async (t)
 
   t.equal(available.length, count, `should return ${count} dates`)
 
-  let expectedDate = getNextDayOfWeek(5) // 5 = Friday
+  let expectedDate = getCurrentOrNextFriday() // Use new helper
   for (let i = 0; i < count; i++) {
     t.ok(available[i] instanceof Date, `date ${i} should be a Date object`)
     t.equal(
@@ -39,7 +56,7 @@ test('schedulingLogic - findAvailableFridays - no speakers scheduled', async (t)
       expectedDate.toISOString(),
       `date ${i} should be ${expectedDate.toISOString()}`,
     )
-    // Calculate next Friday
+    // Calculate next Friday (always add 7 days for subsequent Fridays)
     expectedDate.setUTCDate(expectedDate.getUTCDate() + 7)
   }
 
@@ -49,7 +66,7 @@ test('schedulingLogic - findAvailableFridays - no speakers scheduled', async (t)
 test('schedulingLogic - findAvailableFridays - one Friday booked', async (t) => {
   await ScheduledSpeaker.deleteMany({}) // Clean slate
 
-  const nextFriday = getNextDayOfWeek(5)
+  const nextFriday = getCurrentOrNextFriday()
   const secondFriday = getNextDayOfWeek(
     5,
     new Date(nextFriday.getTime() + 24 * 60 * 60 * 1000),
@@ -99,7 +116,7 @@ test('schedulingLogic - findAvailableFridays - one Friday booked', async (t) => 
 
 test('schedulingLogic - scheduleSpeaker - successful booking', async (t) => {
   await ScheduledSpeaker.deleteMany({}) // Clean slate
-  const dateToBook = getNextDayOfWeek(5)
+  const dateToBook = getCurrentOrNextFriday()
 
   const details = {
     discordUserId: 'userSuccess',
@@ -143,7 +160,7 @@ test('schedulingLogic - scheduleSpeaker - successful booking', async (t) => {
 
 test('schedulingLogic - scheduleSpeaker - date conflict', async (t) => {
   await ScheduledSpeaker.deleteMany({}) // Clean slate
-  const dateToBook = getNextDayOfWeek(5)
+  const dateToBook = getCurrentOrNextFriday()
 
   // Pre-book the date
   await new ScheduledSpeaker({
@@ -193,7 +210,7 @@ test('schedulingLogic - getUpcomingSchedule - past and future speakers', async (
   pastDate.setDate(today.getDate() - 7)
   pastDate.setUTCHours(0, 0, 0, 0)
 
-  const futureDate1 = getNextDayOfWeek(5)
+  const futureDate1 = getCurrentOrNextFriday()
   const futureDate2 = getNextDayOfWeek(
     5,
     new Date(futureDate1.getTime() + 24 * 60 * 60 * 1000),
@@ -251,7 +268,11 @@ test('schedulingLogic - getUpcomingSchedule - respect limit', async (t) => {
 
   const dates = []
   for (let i = 0; i < 5; i++) {
-    dates.push(getNextDayOfWeek(5, dates[i - 1] || new Date()))
+    if (i === 0) {
+      dates.push(getCurrentOrNextFriday())
+    } else {
+      dates.push(getNextDayOfWeek(5, dates[i - 1]))
+    }
     await new ScheduledSpeaker({
       discordUserId: `user${i}`,
       discordUsername: `futureUser${i}`,
@@ -279,10 +300,33 @@ test('schedulingLogic - getUpcomingSchedule - respect limit', async (t) => {
   t.end()
 })
 
+test('schedulingLogic - findAvailableFridays - same day Friday available', async (t) => {
+  await ScheduledSpeaker.deleteMany({}) // Clean slate
+
+  const today = new Date()
+  today.setUTCHours(0, 0, 0, 0)
+
+  if (today.getUTCDay() === 5) {
+    const available = await findAvailableFridays(1)
+
+    t.equal(available.length, 1, 'should return 1 date')
+    t.equal(
+      available[0].toISOString(),
+      today.toISOString(),
+      'should return today when today is Friday and available',
+    )
+  } else {
+    t.skip('Test only runs on Fridays')
+  }
+
+  await ScheduledSpeaker.deleteMany({}) // Cleanup
+  t.end()
+})
+
 test('schedulingLogic - cancelSpeaker - successful cancellation', async (t) => {
   await ScheduledSpeaker.deleteMany({}) // Clean slate
   const userId = 'userToCancel'
-  const futureDate = getNextDayOfWeek(5)
+  const futureDate = getCurrentOrNextFriday()
   const topic = 'Talk to Cancel'
 
   // Schedule a talk for the user
