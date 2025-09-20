@@ -1,0 +1,150 @@
+#!/usr/bin/env node
+/* Chat-first CLI to simulate Discord mentions and threads for AI in Action Bot. */
+const readline = require('readline')
+const config = require('../config')
+const { ChatClient } = require('../lib/chat-sim/client')
+const { createMessageHandler } = require('../lib/shared/message-handler')
+
+// Ensure DB connects (uses lib/mongo side effects)
+require('../lib/mongo')
+
+const guildId = (config.discord && config.discord.guildId) || 'guild-1'
+const botId = (config.discord && config.discord.clientId) || 'bot-1'
+const botName = 'bot'
+
+const client = new ChatClient({ guildId, botId, botName })
+
+// State per thread (shared with discord adapter)
+const activeSignups = {}
+
+// Create initial channel and default user
+const channel = client.createTextChannel({ id: 'c-1', name: 'general' })
+let currentChannel = channel
+let currentUser = client.ensureUser(process.env.AIIA_USERNAME || 'alice')
+
+// Render helpers
+function printSystem(msg) {
+  process.stdout.write(`\x1b[90m${msg}\x1b[0m\n`)
+}
+function printBot(msg) {
+  process.stdout.write(`\x1b[36m@${client.user.username}:\x1b[0m ${msg}\n`)
+}
+function printUser(user, msg) {
+  process.stdout.write(`\x1b[33m@${user.username}:\x1b[0m ${msg}\n`)
+}
+
+// Hook channel/thread events to render
+function attachRenderers(ch) {
+  ch.on('message', ({ content }) => {
+    printBot(content)
+  })
+  if (ch instanceof require('../lib/chat-sim/entities').Channel) {
+    ch.on('threadCreated', (thread) => {
+      printSystem(`Thread created: ${thread.name} (${thread.id})`)
+      attachRenderers(thread)
+      currentChannel = thread
+      updatePrompt()
+    })
+  }
+}
+attachRenderers(channel)
+
+// Prompt
+const rl = readline.createInterface({ input: process.stdin, output: process.stdout })
+function promptName() {
+  if (currentChannel.isThread()) return `#${currentChannel.name} <${currentChannel.id}> `
+  return `#${currentChannel.name}> `
+}
+function updatePrompt() {
+  rl.setPrompt(promptName())
+  rl.prompt()
+}
+
+printSystem(`Guild: ${guildId}`)
+printSystem(`Channel: #${currentChannel.name}`)
+printSystem(`Active user: @${currentUser.username}`)
+printSystem(`Mention the bot with "@${botName}" to begin`)
+printSystem('Type /help to see available CLI slash commands')
+printSystem('Examples: /as @alice, /users, /threads, /switch <id|name>, /quit')
+printSystem('Tip: use /threads to list thread IDs or /switch <parent-name-or-id> to leave a thread')
+updatePrompt()
+
+const handleMessage = createMessageHandler({ client, activeSignups, guildId })
+
+rl.on('line', async (line) => {
+  const input = line.trim()
+  if (!input) return updatePrompt()
+
+  // REPL commands
+  if (input.startsWith('/help')) {
+    printSystem('Commands: /as <@user|name>, /users, /threads, /switch <threadId>, /help, /quit')
+    return updatePrompt()
+  }
+  if (input === '/quit' || input === '/exit') {
+    rl.close()
+    return
+  }
+  if (input.startsWith('/as ')) {
+    const name = input.slice(4).trim().replace(/^@/, '')
+    currentUser = client.ensureUser(name)
+    printSystem(`Switched user to @${currentUser.username}`)
+    return updatePrompt()
+  }
+  if (input === '/users') {
+    const list = Array.from(client._users.values()).map((u) => `@${u.username} <${u.id}>${u.bot ? ' [bot]' : ''}`)
+    printSystem(list.join('\n'))
+    return updatePrompt()
+  }
+  if (input === '/threads') {
+    const baseChannel = currentChannel.isThread() ? currentChannel.parent : currentChannel
+    const threads = (baseChannel && baseChannel.threads) || {}
+    const entries = Object.values(threads)
+    if (!entries.length) {
+      printSystem('No threads available in this channel')
+      return updatePrompt()
+    }
+    const lines = entries.map((thread) => {
+      const active = thread.id === currentChannel.id ? ' [current]' : ''
+      return `#${thread.name} <${thread.id}>${active}`
+    })
+    printSystem(lines.join('\n'))
+    return updatePrompt()
+  }
+  if (input.startsWith('/switch ')) {
+    const id = input.split(' ')[1]
+    if (currentChannel.parent && (id === currentChannel.parent.id || id === currentChannel.parent.name)) {
+      currentChannel = currentChannel.parent
+      printSystem(`Switched to #${currentChannel.name}`)
+      return updatePrompt()
+    }
+    if (channel.threads[id]) {
+      currentChannel = channel.threads[id]
+      printSystem(`Switched to #${currentChannel.name}`)
+      return updatePrompt()
+    }
+    printSystem(`Thread ${id} not found`)
+    return updatePrompt()
+  }
+
+  // Preprocess mentions: @bot and @username -> <@id>
+  let content = input
+  const atUserRegex = /(^|\s)@([a-zA-Z0-9_!.-]+)/g
+  content = content.replace(atUserRegex, (m, pre, name) => {
+    const u = name.toLowerCase() === botName ? client.user : client.ensureUser(name)
+    return `${pre}<@${u.id}>`
+  })
+
+  printUser(currentUser, input)
+  const msg = client.createMessage({ content, author: currentUser, channel: currentChannel })
+  try {
+    await handleMessage(msg)
+  } catch (e) {
+    printSystem(`Error: ${e.message}`)
+  }
+  updatePrompt()
+})
+
+rl.on('close', () => {
+  printSystem('Bye!')
+  process.exit(0)
+})

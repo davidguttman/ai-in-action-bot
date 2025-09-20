@@ -2,13 +2,17 @@
   "name": "start-light-express",
   "version": "1.0.0",
   "main": "server.js",
+  "bin": {
+    "aiia-chat": "bin/aiia-chat"
+  },
   "scripts": {
     "start": "npm run build && node index.js",
     "dev": "nodemon --exec \"npm start\"",
     "build": "npm run deploy-commands",
     "deploy-commands": "node lib/discord/deploy-commands.js",
     "lint": "prettier-eslint --write --no-semi --single-quote \"**/*.js\"",
-    "test": "NODE_ENV=test node test/index.js"
+    "test": "NODE_ENV=test node test/index.js",
+    "chat": "node bin/aiia-chat"
   },
   "keywords": [
     "express",
