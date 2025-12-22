@@ -12,7 +12,8 @@
     "deploy-commands": "node lib/discord/deploy-commands.js",
     "lint": "prettier-eslint --write --no-semi --single-quote \"**/*.js\"",
     "test": "NODE_ENV=test node test/index.js",
-    "chat": "node bin/aiia-chat"
+    "chat": "node bin/aiia-chat",
+    "test-proactive": "node bin/test-proactive.js"
   },
   "keywords": [
     "express",

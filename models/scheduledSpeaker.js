@@ -35,6 +35,14 @@ const scheduledSpeakerSchema = new mongoose.Schema({
   schedulerUsername: {
     type: String,
   },
+  reminders: {
+    sentTminus1At: {
+      type: Date,
+    },
+    sentDayOfAt: {
+      type: Date,
+    },
+  },
 })
 
 const ScheduledSpeaker = mongoose.model(

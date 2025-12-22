@@ -3,6 +3,7 @@ const config = require('./config')
 const mongoose = require('./lib/mongo')
 const autoCatch = require('./lib/auto-catch')
 const authTestRouter = require('./api/auth-test')
+const proactiveInternalRouter = require('./api/proactive-internal')
 const healthpoint = require('healthpoint')
 const authMiddleware = require('./middleware')
 
@@ -24,6 +25,9 @@ app.get(
 
 // API routes
 app.use('/auth', authMiddleware, authTestRouter)
+
+// Internal proactive messaging routes (localhost-only)
+app.use('/internal/proactive', proactiveInternalRouter)
 
 // Error handling middleware
 app.use((err, req, res, next) => {
